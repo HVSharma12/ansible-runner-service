@@ -82,6 +82,24 @@ Connection: close
 
 2. Run the runnertest.yml playbook, passing the time_delay parameter (30 secs should be enough).
 ```curl -k -i -H "Content-Type: application/json" --data '{"time_delay": 30}' https://localhost:5001/api/v1/playbooks/runnertest.yml -X POST```
+```json
+curl -k -i -H "Content-Type: application/json" --data '{"time_delay": 30}' https://localhost:5001/api/v1/playbooks/test-facts.yml -X POST
+HTTP/1.1 202 ACCEPTED
+Server: Werkzeug/3.1.3 Python/3.11.11
+Date: Mon, 10 Feb 2025 10:32:49 GMT
+Content-Type: application/json
+Content-Length: 132
+Connection: close
+
+{
+    "status": "STARTED",
+    "msg": "starting",
+    "data": {
+        "play_uuid": "605175d8-e79a-11ef-ac3e-a080697cfd99"
+    }
+}
+
+```
 
 
 4. The previous command will return the playbooks UUID. Use this identifier to query the state or progress of the run.
