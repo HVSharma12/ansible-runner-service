@@ -23,13 +23,12 @@ The core of this project is ansible_runner, so first of all, a quick call out to
 
 
 ## Prerequisites
-So far, testing has been mainly against Fedora (28) and the CentOS7 for the docker image. Other distros may work fine (Travis build uses Ubuntu Trusty for example!).
+Tested on OpenSuse Tumbleweed.
 
 ### Package Dependencies
 - Python 3.6
 - pyOpenSSL
 - ansible_runner 1.1.1 or above
-- OpenSuse Tumbleweed
 
 ## Installation
 ```
