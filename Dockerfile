@@ -1,40 +1,40 @@
-FROM centos:7
+FROM opensuse/tumbleweed:latest
+
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
 
 # Install dependencies
-RUN yum -y install epel-release  && \
-    yum -y install bash wget unzip \
-    pexpect python-daemon  bubblewrap gcc \
-    bzip2  openssh openssh-clients python2-psutil\
-    python36 python36-devel python36-setuptools\
-    nginx supervisor && \
-    localedef -c -i en_US -f UTF-8 en_US.UTF-8
+RUN zypper --non-interactive refresh && \
+    zypper --non-interactive install --no-recommends \
+    bash ansible wget unzip python311 python311-devel python311-pip python311-setuptools \
+    python311-pexpect python311-python-daemon bubblewrap gcc \
+    bzip2 openssh openssh-clients python311-psutil \
+    glibc-locale glibc-locale-base glibc-i18ndata \
+    python311-cryptography python311-Flask-RESTful python311-Flask uwsgi \
+    python311-docutils python311-netaddr ansible-runner \
+    nginx supervisor python311-PyYAML python311-pyOpenSSL && \
+    zypper clean -a && \
+    localedef -v -c -i en_US -f UTF-8 en_US.UTF-8 || true
 
-RUN /usr/bin/python3 -m pip install ansible cryptography docutils psutil PyYAML \
-    pyOpenSSL flask flask-restful uwsgi netaddr notario && \
-    /usr/bin/python3 -m pip install --no-cache-dir ansible-runner==1.4.6 && \
-    rm -rf /var/cache/yum
-
-# Prepare folders for shared access and ssh
+# Prepare folders for shared access and SSH
 RUN mkdir -p /etc/ansible-runner-service && \
     mkdir -p /root/.ssh && \
     mkdir -p /usr/share/ansible-runner-service/{artifacts,env,project,inventory,client_cert}
 
-# Install Ansible Runner
+# Set working directory
 WORKDIR /root
+
+# Copy application files
 COPY ./*.py ansible-runner-service/
 COPY ./*.yaml ansible-runner-service/
 COPY ./runner_service ansible-runner-service/runner_service
 COPY ./samples ansible-runner-service/samples
 
-# Put configuration files in the right places
-# Nginx configuration
+# Copy configuration files
 COPY misc/nginx/nginx.conf /etc/nginx/
-# Ansible Runner Service nginx virtual server
-COPY misc/nginx/ars_site_nginx.conf /etc/nginx/conf.d
-# Ansible Runner Service uwsgi settings
-COPY misc/nginx/uwsgi.ini /root/ansible-runner-service
-# Supervisor start sequence
-COPY misc/nginx/supervisord.conf /root/ansible-runner-service
+COPY misc/nginx/ars_site_nginx.conf /etc/nginx/conf.d/
+COPY misc/nginx/uwsgi.ini /root/ansible-runner-service/
+COPY misc/nginx/supervisord.conf /root/ansible-runner-service/
 
 # Start services
 CMD ["/usr/bin/supervisord", "-c", "/root/ansible-runner-service/supervisord.conf"]
