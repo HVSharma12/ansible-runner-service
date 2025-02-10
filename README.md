@@ -50,6 +50,36 @@ Once this is installed, you may start the service with
 ansible_runner_service
 ```
 
+## API Endpoints
+
+Once the service is running, you can point your browser at  ```https://localhost:5001/api``` to show which endpoints are available. Each endpoint is described along with a curl example showing invocation and output.
+
+![API endpoints](./screenshots/runner-service-api.gif)
+
+You may click on any row to expand the description of the API route and show the curl example. The app uses a self-signed certificate, so all examples use the -k parameter (insecure mode).
+
+**Note**: *It is not the intent of this API to validate the parameters passed to it. It is assumed that parameter selection and validation happen prior to the API call.*
+
+Here's a quick 'cheat sheet' of the API endpoints.
+
+| API Route | Description |
+|-----------|-------------|
+|/api | Show available API endpoints (this page)|
+|/api/v1/groups| List all the defined groups in the inventory|
+|/api/v1/groups/<group_name>| Manage groups within the inventory|
+|/api/v1/groupvars/<group_name>| Manage group variables|
+|/api/v1/hosts| Return a list of hosts from the inventory|
+|/api/v1/hosts/<host_name>| Show group membership for a given host|
+|/api/v1/hosts/<host_name>/groups/<group_name>| Manage ansible control of a given host|
+|/api/v1/hostvars/<host_name>/groups/<group_name>| Manage host variables for a specific group within the inventory|
+|/api/v1/jobs/<play_uuid>/events| Return a list of events within a given playbook run (job)|
+|/api/v1/jobs/<play_uuid>/events/<event_uuid>| Return the output of a specific task within a playbook|
+|/api/v1/playbooks| Return the names of all available playbooks|
+|/api/v1/playbooks/<play_uuid>| Query the state or cancel a playbook run (by uuid)|
+|/api/v1/playbooks/<playbook_name>| Start a playbook by name, returning the play's uuid|
+|/api/v1/playbooks/<playbook_name>/tags/<tags>| Start a playbook using tags to control which tasks run|
+|/metrics| Provide prometheus compatible statistics which describe playbook [activity](./misc/dashboards/README.md) |
+
 ### Manual Testing
 The archive, downloaded from github, contains a simple playbook that just uses the bash sleep command - enabling you to quickly experiment with the API.
 
