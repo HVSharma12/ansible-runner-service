@@ -238,7 +238,3 @@ Connection: close
 }
 
 ```
-
-6. To get check options:
-```https://localhost:5001/api/``
-
