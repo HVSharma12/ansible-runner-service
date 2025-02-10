@@ -57,29 +57,11 @@ Use the steps below (test mode/test container version <misc/docker>), to quickly
 1. Get the list of available playbooks (should just be test.yml)
 ```curl -k -i https://localhost:5001/api/v1/playbooks  -X GET```
 ```json
+
 curl -k -i https://localhost:5001/api/v1/playbooks  -X GET
 HTTP/1.1 200 OK
 Server: Werkzeug/3.1.3 Python/3.11.11
 Date: Mon, 10 Feb 2025 10:30:53 GMT
-Content-Type: application/json
-Content-Length: 198
-Connection: close
-
-{
-    "status": "OK",
-    "msg": "3 playbook found",
-    "data": {
-        "playbooks": [
-            "probe-disks.yml",
-            "runnertest.yml",
-            "test-facts.yml"
-        ]
-    }
-}
-spectro@localhost:~/ansible-runner-service> curl -k -i https://localhost:5001/api/v1/playbooks  -X GET
-HTTP/1.1 200 OK
-Server: Werkzeug/3.1.3 Python/3.11.11
-Date: Mon, 10 Feb 2025 10:31:22 GMT
 Content-Type: application/json
 Content-Length: 198
 Connection: close
