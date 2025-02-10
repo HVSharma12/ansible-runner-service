@@ -83,10 +83,10 @@ Connection: close
 2. Run the runnertest.yml playbook, passing the time_delay parameter (30 secs should be enough).
 ```curl -k -i -H "Content-Type: application/json" --data '{"time_delay": 30}' https://localhost:5001/api/v1/playbooks/runnertest.yml -X POST```
 ```json
-curl -k -i -H "Content-Type: application/json" --data '{"time_delay": 30}' https://localhost:5001/api/v1/playbooks/test-facts.yml -X POST
+curl -k -i -H "Content-Type: application/json" --data '{"time_delay": 30}' https://localhost:5001/api/v1/playbooks/runnertest.yml -X POST
 HTTP/1.1 202 ACCEPTED
 Server: Werkzeug/3.1.3 Python/3.11.11
-Date: Mon, 10 Feb 2025 10:32:49 GMT
+Date: Mon, 10 Feb 2025 10:46:24 GMT
 Content-Type: application/json
 Content-Length: 132
 Connection: close
@@ -95,7 +95,7 @@ Connection: close
     "status": "STARTED",
     "msg": "starting",
     "data": {
-        "play_uuid": "605175d8-e79a-11ef-ac3e-a080697cfd99"
+        "play_uuid": "45bebfe4-e79c-11ef-a664-a080697cfd99"
     }
 }
 
@@ -104,12 +104,111 @@ Connection: close
 
 4. The previous command will return the playbooks UUID. Use this identifier to query the state or progress of the run.
 ```curl -k -i https://localhost:5001/api/v1/playbooks/f39069aa-9f3d-11e8-852f-c85b7671906d -X GET```
+```json
+curl -k -i https://localhost:5001/api/v1/playbooks/45bebfe4-e79c-11ef-a664-a080697cfd99 -X GET
+HTTP/1.1 200 OK
+Server: Werkzeug/3.1.3 Python/3.11.11
+Date: Mon, 10 Feb 2025 10:47:11 GMT
+Content-Type: application/json
+Content-Length: 1014
+Connection: close
 
+{
+    "status": "OK",
+    "msg": "running",
+    "data": {
+        "task": "Step 2",
+        "task_metadata": {
+            "playbook": "runnertest.yml",
+            "playbook_uuid": "33fd772f-a3a3-4338-9b79-708334ec6632",
+            "play": "test Playbook",
+            "play_uuid": "a080697c-fd99-c63c-4af0-000000000002",
+            "play_pattern": "all",
+            "task": "Step 2",
+            "task_uuid": "a080697c-fd99-c63c-4af0-000000000005",
+            "task_action": "command",
+            "resolved_action": "ansible.builtin.command",
+            "task_args": "",
+            "task_path": "/home/spectro/ansible-runner-service/samples/project/runnertest.yml:12",
+            "name": "Step 2",
+            "is_conditional": false,
+            "uuid": "a080697c-fd99-c63c-4af0-000000000005",
+            "created": "2025-02-10T10:46:54.954241+00:00"
+        },
+        "role": "",
+        "last_task_num": 12,
+        "skipped": 0,
+        "failed": 0,
+        "ok": 1,
+        "failures": {}
+    }
+}
+
+```
 
 5. Get a list of all the events in a playbook. The return list consists of all the job event ID's
 ```curl -k -i https://localhost:5001/api/v1/jobs/f39069aa-9f3d-11e8-852f-c85b7671906d/events  -X GET```
+```json
+curl -k -i https://localhost:5001/api/v1/jobs/45bebfe4-e79c-11ef-a664-a080697cfd99/events  -X GET
+HTTP/1.1 200 OK
+Server: Werkzeug/3.1.3 Python/3.11.11
+Date: Mon, 10 Feb 2025 10:48:09 GMT
+Content-Type: application/json
+Content-Length: 1620
+Connection: close
 
+{
+    "status": "OK",
+    "msg": "",
+    "data": {
+        "events": {
+            "1-33fd772f-a3a3-4338-9b79-708334ec6632": {
+                "event": "playbook_on_start"
+            },
+            "2-a080697c-fd99-c63c-4af0-000000000002": {
+                "event": "playbook_on_play_start"
+            },
+            "3-a080697c-fd99-c63c-4af0-000000000004": {
+                "event": "playbook_on_task_start",
+                "task": "Step 1"
+            },
+            "4-0b9d5ef4-60dc-4aee-98b6-b0ef88ff45de": {
+                "event": "runner_on_start",
+                "host": "26sles15",
+                "task": "Step 1"
+            },
+            "9-b6ffebe2-2c12-4542-8691-9be38d1bc380": {
+                "event": "verbose"
+            },
+            "10-8694a8c9-43a8-47f1-ad74-835f8bcffac2": {
+                "event": "runner_on_ok",
+                "host": "26sles15",
+                "task": "Step 1"
+            },
+            "11-a080697c-fd99-c63c-4af0-000000000005": {
+                "event": "playbook_on_task_start",
+                "task": "Step 2"
+            },
+            "12-dba44434-80d2-41d2-a93c-8ea264ad1137": {
+                "event": "runner_on_start",
+                "host": "26sles15",
+                "task": "Step 2"
+            },
+            "13-20aba243-395c-4536-a5e5-5a5ca8f0d0a3": {
+                "event": "runner_on_ok",
+                "host": "26sles15",
+                "task": "Step 2"
+            },
+            "14-f86c6499-2988-4515-87d3-304efddec9cb": {
+                "event": "playbook_on_stats"
+            }
+        },
+        "total_events": 10
+    }
+}
 
-6. To get check options go to:
+```
+
+6. To get check options:
 ```https://localhost:5001/api/``
 
